@@ -1,0 +1,29 @@
+Notes on Plots and Genes
+
+Peaks for soma and projections are aligned
+Most genes have peaks in the beginning (ex. at 200> bps) like at stop codons
+Exponential increase, then drop
+
+Ap2s1 -> 2 peaks, projections peak greater at the beginning and decreases in the 2nd peak, inverse relationship with soma (different from expected)
+Gas7 -> looks strange, 2 main peaks but not aligned, a lot of information around it
+LOC10 -> 0.40 frequency peak
+Grina -> piling of peaks
+Mapt -> 4 peaks, projections is greatest 
+
+Projection tend to be greater in frequnecy than soma
+
+Peaks tend to be more separated than close one after another
+
+Pipeline - have average distances (most common cutoffs?)
+
+Soma peaks tend to cut off earlier if not aligned with projections peaks (ex. Snd1)
+
+AABR07000398.1 -> 4-5 peaks, looks cluttered with a lot of information/isoforms
+
+Does greatest frequency of a gene matter? 
+
+Gng12 -> 2 major peaks looks cool
+
+Mobp gene -> 3 peaks, soma great in beginning projections greater at end
+Myelin Associated Oligodendrocyte Basic Protein
+Protein Coding gene. Diseases associated with MOBP include Cocaine Abuse and Microphthalmia, Syndromic 10. Gene Ontology (GO) annotations related to this gene include Rab GTPase binding and structural constituent of myelin sheath

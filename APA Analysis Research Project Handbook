@@ -1,0 +1,139 @@
+APA Analysis Research Project Handbook
+Brenda Garibay 
+Created: June 24th, 2021
+Edited: July 12th, 2021
+
+Download Fastqc
+link: https://www.bioinformatics.babraham.ac.uk/projects/fastqc/
+Open the file and transfer the file to applications
+
+Download Fasta and GTF files
+Link: https://uswest.ensembl.org/Rattus_norvegicus/Info/Index
+Look for files in genome annotation:
+	Rattus_norvegicus.Rnor_6.0.104.gtf.gz - GTF
+	Rattus_norvegicus.Rnor_6.0.dna.toplevel.fa.gz - Fasta (toplevel biggest file)
+
+Download cutadapt (how?)
+
+Create APA Analysis folder in documents meant to hold everything will download such as fastq files and packages
+
+Download Rnor6 reference genome 
+Process fastq file is Ved's data from 3' MACE-seq of oligodendrocyte projection-enriched RNA
+
+Open terminal to build bowtie index for genome
+command: Bowtie2-build ref/Rattus_norvegicus.Rnor_6.0.dna.toplevel.fa Rnor_6 (ref is folder in apa analysis, file name after which is the genome, and new name at the end)
+Downloading package will take from 30-45 mins
+
+Align fastqc to genome using bowtie commands
+Link: http://bowtie-bio.sourceforge.net/bowtie2/manual.shtml#aligning-example-reads
+Need to be in apa_analysis (ref is going one level deeper)
+Command: bowtie2 -x ref/Rnor_6 -U fastq/Proces_cleaned.fastq -b aligned/projections.bam (/ inputting into folder)
+Following command: bowtie2 -x ref/Rnor_6 -U fastq/Proces_cleaned.fastq -S aligned/projections.sam
+
+Handy Know Hows:
+	-x = basename index file of ref. genome (looks for prefix, path to folder, shared name)
+	-U = comma separting lists of unpaired reads to be aligned
+	-S = file to write SAM alignments
+
+Note: the default for commands is print into terminal, output non-error results into terminal
+
+Install samtools 
+command: brew install samtools
+
+Convert SAM to BAM File:
+command: samtools view -S -b aligned/projections.sam > aligned/projections.bam (> stream redirect from print to save to file)
+
+Files Info:
+FASTA file = sequence file for ref data (ex. Rat genome)
+FASTQ file = list of sequencing data with quality scores (to read)
+SAM file = Sequence Alignment Map, alignnmnet of fastq file to ref genome (lots of data)
+BAM file = Binary Alignment Map, compact binary file from SAM
+BED file = Browser Extensible Data, format represents genomic features and annotations
+BED file - reads about alignments, chromosome #, start/end alignemnt, name read, quality, +/- strand alignment (sense/anti-sense)
+
+Commands to keep in mind:
+cat <example> | opens files
+ls -lh | shows info on files in directory
+mv Rnor6.bam processed.bam | rename files
+
+To look inside BAM file
+command: head aligned/projections.bam looking at file
+
+Convert BAM to BED File:
+link: https://bedtools.readthedocs.io/en/latest/content/tools/bamtobed.html
+command: bedtools bamtobed -i aligned/projections.bam > aligned/projections.bed
+
+Repeat for Soma Processed file
+Commands:
+bowtie2 -x ref/Rnor_6 -U fastq/Soma_cleaned.fastq -b aligned/processed.bam
+bowtie2 -x ref/Rnor_6 -U fastq/Soma_cleaned.fastq -S aligned/processed.sam
+samtools view -S -b aligned/processed.sam > aligned/processed.bam
+head aligned/processed.bam
+bedtools bamtobed -i aligned/processed.bam > aligned/processed.bed (remove default print using >)
+
+Goal: map out ends RNA molecules, multiple sizes of RNA 
+alignments how do we know which genes those are and getting name of gene
+Bed tools tells us where files intersect
+closest - range in file a closest range in file b, exons stop codon eveyrhint after that UTR, gene that is upstream of read aligned bc that is gene corresponding to wnat things upstream
+-s same strand
+
+command to subset gtf files to slice for stop codons, use closest command for upstream stop codon (give another file)
+
+alternative poly adenlyation
+how we are looking at it (flow chart: steps, tools and end goal: which genes have multple 3' isoforms and metanalaysi )
+
+Done: rm gz
+Done: Sort function - .sorted.bed (output: chromosome, location both bed files)
+Done: grep "stop_codon" [] > rnor6_stopcodons.gtf (annotation gtf file)
+Working on it: closest upstream stop codons
+
+Things to read about:
+- GTF files
+- Bedtools
+- Grep
+
+Sort bed files using Bedtools:
+command: sortBed -i aligned/projections.bed > aligned/sortedprojections.bed #Projections is processed and processed is Soma
+command: sortBed -i aligned/processed.bed > aligned/sortedprocessed.bed
+
+Group GTF file by stop codons:
+command: grep "stop_codon" ref/Rattus_norvegicus.Rnor_6.0.104.gtf > ref/rnor6_stopcodons.gtf
+
+Looking for upstream stop codons:
+link: https://bedtools.readthedocs.io/en/latest/content/tools/closest.html
+command: bedtools closest -D ref -fu -a aligned/sortedprojections.bed -b ref/Rattus_norvegicus.Rnor_6.0.104.gtf > aligned/stopcodonsprojections.bed
+command: bedtools closest -D ref -fu -a aligned/sortedprocessed.bed -b ref/Rattus_norvegicus.Rnor_6.0.104.gtf > aligned/stopcodonsprojections.bed
+
+Sorting a GTF file:
+comand maybe: wget --no-check-certificate https://raw.github.com/ctokheim/PrimerSeq/master/gtf.py -O gtf.py
+brew install wget for command to work
+http://primerseq.sourceforge.net/gtf.html
+python2 gtf.py -c ref/Rattus_norvegicus.Rnor_6.0.104.gtf (not working)
+
+command: sortBed -i ref/Rattus_norvegicus.Rnor_6.0.104.gtf > ref/rnor6sorted.gtf (bedtools accept gtf)
+
+Grep filtering stop codons for sorted:
+grep "stop_codon" ref/rnor6sorted.gtf > ref/rnor6_stopcodons_sorted.gtf
+
+Closest looking upstream stop_codons:
+command: bedtools closest -D ref -fu -a aligned/sortedprojections.bed -b ref/rnor6_stopcodons_sorted.gtf > closest/stopcodonsprojections.bed
+
+Making pipeline with multiple, output UTR, multiple samples and compare
+
+Rename proceessed -> Soma
+
+root folder readmefile text file in apa analysis
+a. intro (inputs, outputs, steps and commands)
+
+All in master branch:
+git init - starts it
+git status - checks status
+git add - adds files/changes to git
+git commit -m 'added readme file' - 
+git commit -m 'updated readme file'
+git remote add origin https://github.com/brendagaribay/git-demo.git - tell git where want code to go
+
+
+
+
+

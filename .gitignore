@@ -1,0 +1,9 @@
+ref/*
+snakemake/*
+fastq*
+aligned/*
+closest
+
+.DS_STORE
+.ipynb_checkpoints
+__pycache__
