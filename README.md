@@ -1,7 +1,8 @@
 # Research Project RNA UTR Isoforms
 Purpose of the project is to identify 3’ UTR isoforms from 3’ RNA sequencing data
-Summer 2021 SSRP pipeline 
-picture on markdown (flowchart)
+Pipeline created 2021 summer through Stanford Summer Research Program in colllaboration with the Das Lab.
+Picture shows a flowchart of the pipeline process.
+![Pipeline Flowchart](Pipeline Flowchart.png)
 
 See the "APA Analysis Research Project Handbook" word doc in this repo for even more information.
 
